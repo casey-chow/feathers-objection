@@ -96,18 +96,21 @@ export default function errorHandler (error) {
     const pgerror = error.code.substring(0, 2)
 
     switch (pgerror) {
-      case '28':
-      case '42':
+      case '28': // Invalid Authorization Specification
+      case '42': // Syntax Error or Access Rule Violation
         feathersError = new errors.Forbidden(error)
         break
 
-      case '20':
-      case '21':
-      case '22':
-      case '23':
+      case '20': // Case Not Found
+      case '22': // Data Exception
         feathersError = new errors.BadRequest(error)
         break
-
+      
+      case '21': // Cardinality Violation
+      case '23': // Integrity Constraint Violation
+        feathersError = new errors.Conflict(error)
+        break
+      
       default:
         feathersError = new errors.GeneralError(error)
     }
